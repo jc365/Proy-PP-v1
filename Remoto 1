@@ -44,13 +44,13 @@ void setup(){
   pinMode(DhtVCC, OUTPUT);   digitalWrite(DhtVCC,  HIGH);
   pinMode(DhtGND, OUTPUT);   digitalWrite(DhtGND,   LOW);
     // Inicializa el DHT22, el ZigBee y el Serial
-  Dht.begin();  Zig.begin(9600);  Serial.begin(9600);
+  Dht.begin();  Zig.begin(57600);  Serial.begin(9600);
   log("Inicializando sensor y Zigee, espera por favor. Valores int de HIGH/LOW: ",HIGH,LOW,-99,-99); 
   delay(2000);
 }
 
 void loop() {
-  delay(1000);
+  //delay(1000);
   if (Serial.available()) leer_Serial();  // Permite el envio de MSG-prueba por consola 
   if (Zig.available())    leer_Zig();     // Entrada productiva de MSGs
   //log("------------------",-99,-99,-99,-99);
@@ -106,47 +106,7 @@ void formatear_msg(String in) {
   }  
 }
 
-void ejecutar_accion( int srv, int p1, int p2, int p3) {  
-  // Ejecucion de acciones recibidas
-  String msg ;
-  log("Ejecutando MSG (srv / p1 / p2 / p3): ", srv, p1, p2, p3);
-  if (srv == 1) {   
-    log("      SRV-1  Lectura de sensores",-99,-99,-99,-99);
-    int hume = Dht.readHumidity();      // lectura de humedad
-    int temp = Dht.readTemperature();   // lectura de temperatura
-    int luz = 300;
-    // Composicion y contestacion al Master con lectura tomada: "#destino:srv:temp:hume:luz/" 
-    msg = "#0:20:" + String(temp) + ":" + String(hume) + ":" + String(luz) + "/";
-    Zig.print(msg); 
-    log(" Contestacion al Master. MSG enviado: "+msg,-99,-99,-99,-99);
-  }
-  else if (srv == 2) {
-    log("      SRV-2   Encender/Apagar releFAR",-99,-99,-99,-99);
-    digitalWrite(releFAR, p1);   
-  }
-  else if (srv == 3) {
-    log("      SRV-3   Encender/Apagar releCST",-99,-99,-99,-99);
-    digitalWrite(releCST, p1);   
-  }
-  else if (srv == 4) {
-    log("      SRV-4   Encender/Apagar releCHM",-99,-99,-99,-99);
-    digitalWrite(releCHM, p1);   
-  }
-  else if (srv == 5) {
-    log("      SRV-5   Encender/Apagar releCAR",-99,-99,-99,-99);
-    digitalWrite(releCAR, p1);   
-  }
-  else if (srv == 6) {
-    log("      SRV-6    Encender/Apagar TodosLosReles",-99,-99,-99,-99);
-    digitalWrite(releFAR, p1);
-    digitalWrite(releCST, p1);
-    digitalWrite(releCHM, p1);
-    digitalWrite(releCAR, p1);
-  }
-  else {
-    log("      SRV-??   Servicio no definido", srv, p1, p2, p3);
-  }
-}
+
      
 void log(String e1, int e2, int e3, int e4, int e5){
   // sw productivo: return;
