@@ -1,0 +1,41 @@
+void ejecutar_accion( int srv, int p1, int p2, int p3) {  
+  // Ejecucion de acciones recibidas
+  String msg ;
+  log("Ejecutando MSG (srv / p1 / p2 / p3): ", srv, p1, p2, p3);
+  if (srv == 1) {   
+    log("      SRV-1  Lectura de sensores",-99,-99,-99,-99);
+    int hume = Dht.readHumidity();      // lectura de humedad
+    int temp = Dht.readTemperature();   // lectura de temperatura
+    int luz = 300;
+    // Composicion y contestacion al Master con lectura tomada: "#destino:srv:temp:hume:luz/" 
+    msg = "#0:11:" + String(temp) + ":" + String(hume) + ":" + String(luz) + "/";
+    Zig.print(msg); 
+    log(" Contestacion al Master. MSG enviado: "+msg,-99,-99,-99,-99);
+  }
+  else if (srv == 2) {
+    log("      SRV-2   Encender/Apagar releFAR",p1,-99,-99,-99);
+    digitalWrite(releFAR, p1);   
+  }
+  else if (srv == 3) {
+    log("      SRV-3   Encender/Apagar releCST",p1,-99,-99,-99);
+    digitalWrite(releCST, p1);   
+  }
+  else if (srv == 4) {
+    log("      SRV-4   Encender/Apagar releCHM",p1,-99,-99,-99);
+    digitalWrite(releCHM, p1);   
+  }
+  else if (srv == 5) {
+    log("      SRV-5   Encender/Apagar releCAR",p1,-99,-99,-99);
+    digitalWrite(releCAR, p1);   
+  }
+  else if (srv == 6) {
+    log("      SRV-6    Encender/Apagar TodosLosReles",p1,-99,-99,-99);
+    digitalWrite(releFAR, p1);
+    digitalWrite(releCST, p1);
+    digitalWrite(releCHM, p1);
+    digitalWrite(releCAR, p1);
+  }
+  else {
+    log("      SRV-??   Servicio no definido", srv, p1, p2, p3);
+  }
+}
