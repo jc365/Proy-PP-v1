@@ -1,4 +1,6 @@
 #include <SoftwareSerial.h>
+#include <AltSoftSerial.h>
+
 
 //PARA ENTRAR EN MODO ZAT CONECTAR EL ARD-PIN3 CON HC05-KEY
 //NAME=HC05 ; ROLE=0 ; PSWD=1234
@@ -7,6 +9,8 @@
 //#define ZigTX  3
 //#define ZigRX  4
 //#define ZigGND 5
+
+#define DBGLVL -1
 
 #define btVCC  7
 #define btTX   8
@@ -36,6 +40,8 @@ String str,  srv, temp, hume;
 int a = 0;
 
 
+
+AltSoftSerial Bt;
 //SoftwareSerial Bt(btTX, btRX); // RX | TX
 
 void setup() {
@@ -51,15 +57,16 @@ digitalWrite(btVCC, HIGH);
   Zig.begin(57600);
   //Zig.setTimeout(50);
 delay(2000);
-Serial.begin(9600);
-Serial.println("Testo recepcion en master:");
-//Bt.begin(38400);  // HC-05 default speed in AT command more
-}
+  Serial.begin(9600);
+  Serial.println("Testo recepcion en master:");
+  Bt.begin(38400);  // HC-05 default speed in AT command more
+}  
 
 void loop() {
-  delay(3000);
+  delay(1600);
   if (Serial.available()) leer_Serial();  // Permite el envio de MSG-prueba por consola 
   if (Zig.available())    leer_Zig();     // Entrada productiva de MSGs
+  if (Bt.available())    leer_Bt(); 
   //Zig.print("#1:1:0:0:0/");
 }
 
@@ -106,3 +113,24 @@ void leer_Zig() {
   log(" MSG leido: #"+msg,-99,-99,-99,-99);
   formatear_msg(msg);
 }
+
+
+void leer_Bt() {
+  log(" entrando en leerBt",-99,-99,-99,-99);
+  String msg = "";
+  char inChar;
+  // posicionamiento al principio del mensaje
+  while (Bt.available() && inChar != '#' ) {
+    inChar = Bt.read();
+    log("  Bt. Leido y desechado: "+inChar,-99,-99,-99,-99);
+  }  
+  // carga msg hasta el final del mensaje
+  while (Bt.available() && inChar != '/' ) {
+    inChar = Bt.read();
+    msg += inChar;
+  }  
+  log(" MSG leido: #"+msg,-99,-99,-99,-99);
+  formatear_msg(msg);
+}
+
+
