@@ -1,23 +1,19 @@
 #include <SoftwareSerial.h>
 #include <AltSoftSerial.h>
 
-
-//PARA ENTRAR EN MODO ZAT CONECTAR EL ARD-PIN3 CON HC05-KEY
-//NAME=HC05 ; ROLE=0 ; PSWD=1234
-
-//#define ZigVCC 2
-//#define ZigTX  3
-//#define ZigRX  4
-//#define ZigGND 5
-
+#define VERSION "Mf4 -> "
 #define DBGLVL -1
 
-#define btVCC  7
-#define btTX   8
-#define btRX   9
+// AltSoftSerial always uses these pins:
+//
+// Board          Transmit  Receive   PWM Unusable
+// -----          --------  -------   ------------
+// Arduino Uno        9         8         10
+//
+// El HC-05 (bluetooth) está conectado a los pines: 8 (TX) y 9 (RX)
 
 // Constantes 
-#define VERSION "MF3Vfinal -> "
+
 #define DhtGND  8       // Pin GND del DHT22
 #define DhtPIN  9       // Pin de lectura del DHT22
 #define DhtVCC  10      // Pin VCC del DHT22
@@ -32,104 +28,82 @@
 #define releCAR 7       // Pin de control del Rele 4 (Caravana)
 #define MI_ID   0       // Identificador del modulo ZigBee (id=0 para MASTER; id=1 para REMOTO1)
 
+SoftwareSerial Zig(ZigTX, ZigRX);
+AltSoftSerial  Bt;
 
-
-
-SoftwareSerial Zig(ZigTX, ZigRX)    ;
-String str,  srv, temp, hume;
+String str, srv, temp, hume;
 int a = 0;
 
-
-
-AltSoftSerial Bt;
-//SoftwareSerial Bt(btTX, btRX); // RX | TX
-
 void setup() {
-pinMode(btVCC, OUTPUT);  // this pin will pull the HC-05 pin 34 (key pin) HIGH to switch module to AT mode
-digitalWrite(btVCC, HIGH);
-
-  // activar alimentaiones
-
-  pinMode(ZigVCC, OUTPUT);  // patilla Vcc del Zig
-  digitalWrite(ZigVCC, HIGH);
-  pinMode(ZigGND, OUTPUT);  // patilla - del Zig
-  digitalWrite(ZigGND, LOW);
+  // activar pines de alimentacion
+  pinMode(ZigVCC, OUTPUT);  digitalWrite(ZigVCC, HIGH);
+  pinMode(ZigGND, OUTPUT);  digitalWrite(ZigGND, LOW);
   Zig.begin(57600);
-  //Zig.setTimeout(50);
-delay(2000);
   Serial.begin(9600);
-  Serial.println("Testo recepcion en master:");
-  Bt.begin(38400);  // HC-05 default speed in AT command more
+  Bt.begin(38400);  
+  //delay(2000); 
+  log_v2(1,"Arranque de la placa CENTRAL...",-99,-99,-99,-99);  
 }  
 
 void loop() {
-  delay(1600);
+  delay(1600);                            // Calculado por tanteo
   if (Serial.available()) leer_Serial();  // Permite el envio de MSG-prueba por consola 
-  if (Zig.available())    leer_Zig();     // Entrada productiva de MSGs
-  if (Bt.available())    leer_Bt(); 
-  //Zig.print("#1:1:0:0:0/");
+  if (Zig.available())    leer_Zig();     // Salida/Contestacion de MSGs con remotos
+  if (Bt.available())     leer_Bt();      // Entrada productiva de MSGs
 }
 
 
-
-
-/* codigo copiado literal
- *  
- */
 void leer_Serial() {
-  log(" entrando en leerSerial",-99,-99,-99,-99);
+  log_v2(2,"Entrando en leerSerial()",-99,-99,-99,-99);
   String msg = "";
   char inChar;
   // posicionamiento al principio del mensaje
   while (Serial.available() && inChar != '#' ) {
     inChar = Serial.read();
-    log("  Serial. Leido y desechado: "+inChar,-99,-99,-99,-99);
-  }  
-  // carga msg hasta el final del mensaje
+    log_v2(3,"Serial- Leido y desechado: "+inChar,-99,-99,-99,-99);
+  } 
+  // carga msg hasta final del mensaje
   while (Serial.available() && inChar != '/' ) {
     inChar = Serial.read();
     msg += inChar;
   }  
-  log(" MSG leido: #"+msg,-99,-99,-99,-99);
-  // codigo alterado
+  log_v2(1,"MSG leido: #"+msg,-99,-99,-99,-99);
   formatear_msg(msg);
-  //Zig.print("#"+msg);
 }
 
 void leer_Zig() {
-  log(" entrando en leerZig",-99,-99,-99,-99);
+  log_v2(2,"Entrando en leerZig()",-99,-99,-99,-99);
   String msg = "";
   char inChar;
   // posicionamiento al principio del mensaje
   while (Zig.available() && inChar != '#' ) {
     inChar = Zig.read();
-    log("  Zig. Leido y desechado: "+inChar,-99,-99,-99,-99);
+    log_v2(3,"Zig- Leido y desechado: "+inChar,-99,-99,-99,-99);
   }  
   // carga msg hasta el final del mensaje
   while (Zig.available() && inChar != '/' ) {
     inChar = Zig.read();
     msg += inChar;
   }  
-  log(" MSG leido: #"+msg,-99,-99,-99,-99);
+  log_v2(1,"MSG leido: #"+msg,-99,-99,-99,-99);
   formatear_msg(msg);
 }
 
-
 void leer_Bt() {
-  log(" entrando en leerBt",-99,-99,-99,-99);
+  log_v2(2,"Entrando en leerBt()",-99,-99,-99,-99);
   String msg = "";
   char inChar;
   // posicionamiento al principio del mensaje
   while (Bt.available() && inChar != '#' ) {
     inChar = Bt.read();
-    log("  Bt. Leido y desechado: "+inChar,-99,-99,-99,-99);
+    log_v2(3,"Bt- Leido y desechado: "+inChar,-99,-99,-99,-99);
   }  
   // carga msg hasta el final del mensaje
   while (Bt.available() && inChar != '/' ) {
     inChar = Bt.read();
     msg += inChar;
   }  
-  log(" MSG leido: #"+msg,-99,-99,-99,-99);
+  log_v2(1,"MSG leido: #"+msg,-99,-99,-99,-99);
   formatear_msg(msg);
 }
 
