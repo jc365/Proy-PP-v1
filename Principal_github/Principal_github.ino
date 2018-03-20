@@ -37,7 +37,7 @@ int     LDR_ult_tto    = DIA   ;
 //-
 int     dlt_lectura    = 2000  ;
 int     cont_registro  = 0     ;
-int     temp_int, temp_ext, hume_int, hume_ext ;
+int     temp_int, temp_ext, hume_int, hume_ext, luz ;
 int     tMax           = -90   ;    // Variables para registrar valores minimo y Maximo
 int     tMin           = 200   ; 
 String  fecha, hora;
@@ -59,6 +59,7 @@ void setup() {
   log_v2(1,"Arranque de la placa PRINCIPAL...",-99,-99,-99,-99);  
 }  
 
+
 void loop() 
   {
   Medir_Sondas_Locales(dlt_lectura);
@@ -66,6 +67,5 @@ void loop()
   if (Serial.available()) leer_Serial();  // Permite el envio de MSG-prueba por consola 
   if (Zig.available())    leer_Zig();     // Salida/Contestacion de MSGs con remotos
   }
-
 
 

@@ -33,6 +33,8 @@
 #define releENT 12      // Pin de control del Rele 1 (Entrada)
 #define releCLF 13      // Pin de control del Rele 2 (Calefaccion)
 // Variables Globales
+int            temp, hume;
+String         msg;
 SoftwareSerial Bt(BtTX, BtRX); 
 DHT            Dht(DhtPIN, DhtTYPE);
 
@@ -54,8 +56,13 @@ void setup(){    // --- SETUP del Remoto1 ---
 
 
 void loop() {    // --- LOOP del Remoto1 ---
-  if (Serial.available()) leer_Serial();  // Permite el envio de MSG-prueba por consola 
-  if (Bt.available())     leer_Bt();      // Entrada inalambrica de MSGs
+  if (millis() % 6500 == 0) 
+    R1_leer_sondas();
+  if (Serial.available())   
+    leer_Serial();  // Permite el envio de MSG-prueba por consola 
+  if (Bt.available())       
+    leer_Bt();      // Entrada inalambrica de MSGs
 }
+
 
 

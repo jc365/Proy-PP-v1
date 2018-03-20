@@ -14,7 +14,11 @@
 // Constantes 
 #define VERSION "R2f5v1 -> "
 #define DBGLVL  3
-#define MI_ID   1       // Identificador del modulo ZigBee (id=0 para MASTER; id=1 para REMOTO1)
+#define MI_ID   2       // Identificador del modulo (id=0 para MASTER; id=1 para REMOTO1; ...)
+#undef  CHN_BT  
+#define CHN_ZIG 
+#define CHN_SRL 
+#undef  CHN_I2C 
 //-
 #define DhtGND  8       // DHT22 - pin GND 
 #define DhtPIN  9       // DHT22 - pin de lectura
@@ -42,6 +46,7 @@ int     LDR_corte_op   = LDR_umbral_luz ;
 int     LDR_ult_tto    = DIA   ;
 int     temp           = 0     ;
 int     hume           = 0     ;
+String  msg                    ;
 //-
 SoftwareSerial Zig(ZigTX, ZigRX); 
 DHT            Dht(DhtPIN, DhtTYPE);
