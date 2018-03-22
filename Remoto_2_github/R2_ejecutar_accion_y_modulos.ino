@@ -38,6 +38,10 @@ void ejecutar_accion( int srv, int p1, int p2, int p3) {
       digitalWrite(releCHM, p1);
       digitalWrite(releCAR, p1);
       break;
+    case 9:
+      log_v2(1,"SRV-9    Registro de umbral de NOCHE: ",p1,-99,-99,-99);
+      LDR_umbral_luz = p1;
+      break;  
     default:
       log_v2(1,"SRV-??   Servicio no definido", srv, p1, p2, p3);
   }

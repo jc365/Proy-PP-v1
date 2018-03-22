@@ -30,19 +30,22 @@
 #define releENT  12      // Pin de control del Rele 1 (Entrada)
 #define releCLF  13      // Pin de control del Rele 2 (Calefaccion)
 //-
-int     LDR_estado     = NOCHE ;
-int     LDR_sw_ent     = "C"   ;    // S=encendido / N=apagado / C=crepuscular
-int     LDR_sw_frl     = "S"   ;    // S=encendido / N=apagado / C=crepuscular
-int     LDR_ult_tto    = DIA   ;
-//-
-int     dlt_lectura    = 2000  ;
-int     cont_registro  = 0     ;
-int     temp_int, temp_ext, hume_int, hume_ext, luz ;
+int     swENT          = "C"   ;    // S=encendido / N=apagado / C=crepuscular
+int     swFRL          = "S"   ;    // S=encendido / N=apagado / C=crepuscular
+int     swCLF          = "N"   ;    // S=encendido / N=apagado
+int     swCST          = "N"   ;    // S=encendido / N=apagado
+int     swCHM          = "N"   ;    // S=encendido / N=apagado
+int     swCRV          = "N"   ;    // S=encendido / N=apagado
+int     temp_int       = 0     ;
+int     temp_ext       = 0     ; 
+int     hume_int       = 0     ;
+int     hume_ext       = 0     ;
+int     luz            = DIA   ;
 int     tMax           = -90   ;    // Variables para registrar valores minimo y Maximo
 int     tMin           = 200   ; 
-String  fecha, hora;
-//-  diseño del grafico de caracter "grado" (º)
-byte grado[8] = {0b00110,0b01001,0b01001,0b00110,0b00000,0b00000,0b00000,0b00000};
+String  fecha,  hora;
+//-  diseño grafico de caracter "grado" (º)
+byte    grado[8]       = {0b00110,0b01001,0b01001,0b00110,0b00000,0b00000,0b00000,0b00000} ;
 //-
 SoftwareSerial Zig(ZigTX, ZigRX);
 LiquidCrystal  lcd(12, 11, 5, 4, 3, 2);
@@ -62,7 +65,6 @@ void setup() {
 
 void loop() 
   {
-  Medir_Sondas_Locales(dlt_lectura);
   delay(1600);                            // Calculado por tanteo
   if (Serial.available()) leer_Serial();  // Permite el envio de MSG-prueba por consola 
   if (Zig.available())    leer_Zig();     // Salida/Contestacion de MSGs con remotos
