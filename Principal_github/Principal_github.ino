@@ -1,17 +1,12 @@
 
-// Librerias utilizadas
-#include <SoftwareSerial.h>
-#include <LiquidCrystal.h>
-#include <Time.h>
-#include <TimeLib.h>
-#include <Wire.h>
 // Constantes 
 #define VERSION  "Pf5v1 -> "
 #define DBGLVL   3
-#undef  CHN_BT  
-#define CHN_ZIG 
-#define CHN_SRL 
-#define CHN_I2C 
+#include "C:\Users\Juan\Documents\Arduino\DBGmacros\DBGmacros.ino"
+#define CHN_BT   false
+#define CHN_ZIG  true
+#define CHN_SRL  true
+#define CHN_I2C  true
 #define MI_ID    0       // Identificador del modulo (id=0 para MASTER; id=1 para REMOTO1; ...)
 #define WIREDST  1       // Id destino de msgs por I2C
 //-
@@ -29,7 +24,15 @@
 //-
 #define releENT  12      // Pin de control del Rele 1 (Entrada)
 #define releCLF  13      // Pin de control del Rele 2 (Calefaccion)
-//-
+
+// Librerias utilizadas
+#include <SoftwareSerial.h>
+#include <LiquidCrystal.h>
+#include <Time.h>
+#include <TimeLib.h>
+#include <Wire.h>
+
+// Variables
 int     swENT          = "C"   ;    // S=encendido / N=apagado / C=crepuscular
 int     swFRL          = "S"   ;    // S=encendido / N=apagado / C=crepuscular
 int     swCLF          = "N"   ;    // S=encendido / N=apagado
@@ -59,15 +62,27 @@ void setup() {
   Serial.begin(9600);
   Wire.begin(MI_ID);            
   Wire.onReceive(leer_I2C);     // Al recibir una petición, ejecuta rutina "leer_I2C"
-  log_v2(1,"Arranque de la placa PRINCIPAL...",-99,-99,-99,-99);  
+//  
+//  DBGprint("pffo"); 
+   Serial.println("mundo");
+   DBGLOG_F5("plofffffSRV-1   Set de umbral de NOCHE: ",127,-99,-99,-99);
 }  
 
 
 void loop() 
   {
   delay(1600);                            // Calculado por tanteo
+  DBGLOG_F2("Arrancando monitor del módulo Principal","");
   if (Serial.available()) leer_Serial();  // Permite el envio de MSG-prueba por consola 
   if (Zig.available())    leer_Zig();     // Salida/Contestacion de MSGs con remotos
+  for (byte n=12; n>7; n--) Serial.println(RELLENA_2(n));
+  for (byte n=102; n>98; n--) Serial.println(RELLENA_3(n));
+  for (byte n=12; n>7; n--) Serial.println(RELLENA_3(n));
+  for (byte n=102; n>98; n--) Serial.println(RELLENA_4(n));
+  for (byte n=12; n>7; n--) Serial.println(RELLENA_4(n));
+  Serial.println(HORA);
+  Serial.println(FECHA_HORA_Y4);
+  Serial.println(FECHA_HORA_Y2);
   }
 
 
