@@ -1,8 +1,9 @@
 # Proy-PP-v1
-Programación para domotica 
+Programación para domotica
 
 
 describir los sensores y actuadores conectados
+**********************************************
 
 
 
@@ -23,7 +24,7 @@ describir los sensores y actuadores conectados
 -----------------------------------------------------------------------------
 Electrocooking nov 2016 - Luchyam
 Sensor de temperatura y humedad DHT22 con un display LCD 16 x 2 - v1.0
------------------------------------------------------------------------------ 
+-----------------------------------------------------------------------------
 -- DISPLAY 16x2 ---
 Conexiones :
 * LCD RS pin to digital pin 12
@@ -40,4 +41,3 @@ Conexiones :
 * wiper to LCD VO pin (pin 3)
 Para más detalles de la librería del display y de su uso:
    http://www.arduino.cc/en/Tutorial/LiquidCrystal
- 
