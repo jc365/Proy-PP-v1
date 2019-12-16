@@ -3,7 +3,7 @@ Programación para domotica
 
 
 describir los sensores y actuadores conectados
-**********************************************
+**abc********************************************
 
 
 
