@@ -1,0 +1,62 @@
+DEFECTO_TMAX = -50;
+DEFECTO_TMIN = 100;
+PERIODO_LECTURA_T = 60.000;           // 1 MINUTO
+PERIODO_RESET_mM = 604.800.000;       // 1 SEMANA. Cuidado: el reloj resetea cada 4.294.967.296 que son casi 50 dias 
+PERIODO_ENVIO_LECTURAS = 86.400.000;  // 1 DIA ¿¿??
+PERIODO_LECTURA_GRABADA = 10.800.000  // 3 HORAS
+LECTURAS_EN_BUFFER = 4                // 4*3 HORAS = CADA 1 DIA SE ENVIAN LOS DATOS GUARDADOS POR SMS
+NO_HAY_LUZ = 50;                      // A voleo. Hay que reajustarla con valores reales o de prueba
+
+unsigned long contador_reset_mM = 0;
+unsigned long contador_grabacion = 0;
+int tempMax = DEFECTO_TMAX;
+int tempMin = DEFECTO_TMIN;
+float temp
+string buffer[LECTURAS_EN_BUFFER];
+int elemento_buffer = 0;
+
+setup()
+   // Definir interrupciones cuando llega un SMS o se pulsa un boton
+endSetup
+
+loop()
+  
+  // Gestion del sensor de humedad y temperatura
+  lectura_sensor_DHT22
+  
+  registrar, si procede, nuevo minimo o maximo
+  contador_reset_mM = contador_reset_mM + PERIODO_LECTURA_T
+  contador_grabacion = contador_grabacion + PERIODO_LECTURA_T
+  
+  si contador_reset_mM >= PERIODO_RESET_mM
+    tempMax = DEFECTO_TMAX
+    tempMin = DEFECTO_TMIN
+    contador_reset_mM = 0
+   endSi
+  
+   si contador_grabacion >= PERIODO_LECTURA_GRABADA
+     buffer[elemento_buffer] = fecha, hora, temp
+     contador_grabacion = 0
+     elemento_buffer = elemento_buffer + 1
+     si elemento_buffer = LECTURAS_EN_BUFFER - 1 // el -1 es para ajustar que el primer elemento es 0
+       enviar_SMS con datos del buffer
+       elemento_buffer = 0;
+     endSi
+   endSi
+   
+   // Gestion de la fotoresistencia cuando hay configurado algo como CREPUSCULAR
+   si st_ENT = "C" or st_FRL = "C"    
+      lectura_foto
+      si NO_HAY_LUZ
+         si st_ENT = "C"
+            encender_ENT
+         endSi
+         si st_FRL = "C"
+            encender_FRL
+         endSi
+      endSi
+   endSi
+    
+   delay(PERIODO_LECTURA_T)
+   
+endLoop   

@@ -9,3 +9,12 @@ in the development cycle.
 
 More information about PIO Unit Testing:
 - https://docs.platformio.org/page/plus/unit-testing.html
+
+
+***
+La forma más fácil de ver qué clases están disponibles para diseñar es inspeccionar
+el DOM manualmente a través de las Herramientas para desarrolladores. Revisaremos las
+Herramientas para desarrolladores con gran detalle en el próximo capítulo, pero por
+ahora echemos un vistazo. Puede abrir las Herramientas para desarrolladores
+presionando Ctrl+Shift+I, lo que abrirá el panel de Herramientas para desarrolladores
+de Chromium.
