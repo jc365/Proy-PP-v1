@@ -1,7 +1,7 @@
 DEFECTO_TMAX = -50;
 DEFECTO_TMIN = 100;
 PERIODO_LECTURA_T = 60.000;           // 1 MINUTO
-PERIODO_RESET_mM = 604.800.000;       // 1 SEMANA. Cuidado: el reloj resetea cada 4.294.967.296 que son casi 50 dias 
+PERIODO_RESET_mM = 604.800.000;       // 1 SEMANA. Cuidado: el reloj resetea cada 4.294.967.296 que son casi 50 dias
 PERIODO_ENVIO_LECTURAS = 86.400.000;  // 1 DIA ¿¿??
 PERIODO_LECTURA_GRABADA = 10.800.000  // 3 HORAS
 LECTURAS_EN_BUFFER = 4                // 4*3 HORAS = CADA 1 DIA SE ENVIAN LOS DATOS GUARDADOS POR SMS
@@ -20,20 +20,20 @@ setup()
 endSetup
 
 loop()
-  
+
   // Gestion del sensor de humedad y temperatura
   lectura_sensor_DHT22
-  
+
   registrar, si procede, nuevo minimo o maximo
   contador_reset_mM = contador_reset_mM + PERIODO_LECTURA_T
   contador_grabacion = contador_grabacion + PERIODO_LECTURA_T
-  
+
   si contador_reset_mM >= PERIODO_RESET_mM
     tempMax = DEFECTO_TMAX
     tempMin = DEFECTO_TMIN
     contador_reset_mM = 0
    endSi
-  
+
    si contador_grabacion >= PERIODO_LECTURA_GRABADA
      buffer[elemento_buffer] = fecha, hora, temp
      contador_grabacion = 0
@@ -43,9 +43,9 @@ loop()
        elemento_buffer = 0;
      endSi
    endSi
-   
+
    // Gestion de la fotoresistencia cuando hay configurado algo como CREPUSCULAR
-   si st_ENT = "C" or st_FRL = "C"    
+   si st_ENT = "C" or st_FRL = "C"
       lectura_foto
       si NO_HAY_LUZ
          si st_ENT = "C"
@@ -56,7 +56,54 @@ loop()
          endSi
       endSi
    endSi
-    
+
    delay(PERIODO_LECTURA_T)
-   
-endLoop   
+
+endLoop
+
+
+
+Equipamiento Version 2.
+
+Maestro:
+*********
+  Comunicaciones:
+    nRF24L01 para comunicacion con estaciones
+    Modulo GSM para enviar datos y recibir instrucciones via móvil
+  Control y alimentacion:
+    Arduino Mega
+    LCD 24x2
+    Fuente alimentacion AC-DC(24v)
+    Regulador DC-DC ajustable
+  Sensores y actuadores:
+    Termometro interior
+    Rele para calefaccion (CLF)
+    Rele para Entrada (ENT)
+    Rele para Farolas (FRL)
+
+
+Remoto_1 (Caseta):
+*******************
+  Comunicaciones:
+    nRF24L01 para comunicacion entre estaciones
+  Control y alimentacion:
+    Arduino Uno
+    Fuente alimentacion AC-DC(24v)
+    Regulador DC-DC ajustable
+  Sensores y actuadores:
+    Termometro exterior
+    Sensor de luz
+    Rele para Chamizo (CHM)
+    Rele para Caravana (CRV)
+    Rele para Caseta (CST)
+
+
+Remoto_2 (Caravana):
+*********************
+  Comunicaciones:
+    nRF24L01 para comunicacion entre estaciones
+  Control y alimentacion:
+    Arduino Uno
+    Bateria coche (DC-12v)
+    Regulador DC-DC ajustable
+    Rele para Agua (AGU)

@@ -5,7 +5,7 @@
  * b) para facilitar la depuracion. Desactivable eliminando la constante DBGLVL o igualandola a 0 (cero)
  * c) rutinas comunes para cualquier estacion que la necesite
  */
-
+ 
 #include <Time.h>
 #include <TimeLib.h>
 
